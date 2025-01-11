@@ -108,8 +108,8 @@ def check_black_image(logger, rating_key, title, thumb_url, plex_server, plex_po
         resp = requests.get(thumb_url_full, params={"X-Plex-Token": plex_token}, timeout=10)
         resp.raise_for_status()
     except requests.RequestException as e:
-        logger.debug(f"[{rating_key}, {title}] 画像取得失敗: {e} → 再生成必要かも？ ただここはFalse")
-        return False
+        logger.debug(f"[{rating_key}, {title}] 画像取得失敗: {e} → “実質サムネ無”と判断して再生成対象にする")
+        return True
 
     try:
         img = Image.open(BytesIO(resp.content)).convert("L")
