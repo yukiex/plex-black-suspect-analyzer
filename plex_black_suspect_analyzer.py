@@ -19,18 +19,21 @@ except ImportError:
 
 def setup_logger(debug_mode=False, log_file_path="/var/log/plex_black_analyzer.log"):
     logger = logging.getLogger("plex_analyze")
+    # 全体の最低レベルは一旦DEBUGでもOK。ただし各Handlerが出力レベルを制御
     logger.setLevel(logging.DEBUG)
 
-    # コンソール出力
+    # コンソール出力用ハンドラ
     sh = logging.StreamHandler(sys.stdout)
+    # --debug オプションがあればDEBUG、なければINFO
     sh.setLevel(logging.DEBUG if debug_mode else logging.INFO)
     sh_formatter = logging.Formatter("[%(levelname)s] %(message)s")
     sh.setFormatter(sh_formatter)
     logger.addHandler(sh)
 
-    # ファイル出力
+    # ファイル出力用ハンドラ
     fh = logging.FileHandler(log_file_path, encoding='utf-8')
-    fh.setLevel(logging.DEBUG)
+    # こちらも同様に --debug がなければINFO
+    fh.setLevel(logging.DEBUG if debug_mode else logging.INFO)
     fh_formatter = logging.Formatter(
         "%(asctime)s [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
